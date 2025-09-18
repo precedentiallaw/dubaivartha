@@ -2,87 +2,143 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* Dubai Vartha Design System - Pink to Blue Brand Gradient
+All colors MUST be HSL format for consistency.
 */
 
 @layer base {
   :root {
+    /* Brand Colors - Dubai Vartha Pink to Blue Gradient */
+    --brand-pink: 339 82% 70%;
+    --brand-blue: 212 85% 65%;
+    --brand-gradient: linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-blue)));
+    --brand-gradient-soft: linear-gradient(135deg, hsl(var(--brand-pink) / 0.1), hsl(var(--brand-blue) / 0.1));
+    
+    /* Base Colors */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    --foreground: 222 84% 5%;
+    
+    /* Card & Surface Colors */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    --card-foreground: 222 84% 5%;
+    --card-hover: 0 0% 98%;
+    
+    /* Popover Colors */
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-
+    --popover-foreground: 222 84% 5%;
+    
+    /* Primary - Using Brand Blue */
+    --primary: 212 85% 65%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 212 85% 55%;
+    
+    /* Secondary - Neutral with Brand Accent */
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 222 47% 11%;
+    
+    /* Muted Colors */
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 16% 47%;
+    
+    /* Accent - Using Brand Pink */
+    --accent: 339 82% 70%;
+    --accent-foreground: 0 0% 100%;
+    
+    /* Status Colors */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    
+    /* News-specific Colors */
+    --breaking-news: 0 100% 50%;
+    --breaking-news-foreground: 0 0% 100%;
+    
+    /* Border & Input */
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 212 85% 65%;
+    
+    /* Shadows & Effects */
+    --shadow-soft: 0 4px 12px hsl(var(--brand-blue) / 0.1);
+    --shadow-brand: 0 8px 25px hsl(var(--brand-pink) / 0.2);
+    
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s ease-out;
+    
+    --radius: 0.75rem;
+    
+    /* Sidebar */
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    /* Brand Colors remain consistent */
+    --brand-pink: 339 82% 70%;
+    --brand-blue: 212 85% 65%;
+    
+    /* Dark Theme Base */
+    --background: 222 84% 5%;
     --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
+    
+    /* Dark Cards & Surfaces */
+    --card: 222 47% 11%;
     --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
+    --card-hover: 222 47% 13%;
+    
+    /* Dark Popover */
+    --popover: 222 47% 11%;
     --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
+    
+    /* Dark Primary - Brighter for contrast */
+    --primary: 212 85% 75%;
+    --primary-foreground: 222 47% 11%;
+    --primary-hover: 212 85% 70%;
+    
+    /* Dark Secondary */
+    --secondary: 217 33% 18%;
     --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
+    
+    /* Dark Muted */
+    --muted: 217 33% 18%;
+    --muted-foreground: 215 20% 65%;
+    
+    /* Dark Accent - Brighter pink for contrast */
+    --accent: 339 82% 75%;
+    --accent-foreground: 222 47% 11%;
+    
+    /* Dark Status Colors */
+    --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    
+    /* Dark News-specific */
+    --breaking-news: 0 100% 60%;
+    --breaking-news-foreground: 0 0% 100%;
+    
+    /* Dark Borders & Input */
+    --border: 217 33% 18%;
+    --input: 217 33% 18%;
+    --ring: 212 85% 75%;
+    
+    /* Dark Shadows */
+    --shadow-soft: 0 4px 12px hsl(0 0% 0% / 0.3);
+    --shadow-brand: 0 8px 25px hsl(var(--brand-pink) / 0.3);
+    
+    /* Dark Sidebar */
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -99,7 +155,59 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html {
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--brand-gradient);
+    @apply rounded-full;
+  }
+  
+  /* Breaking news animation */
+  @keyframes breaking-pulse {
+    0%, 100% { 
+      background-color: hsl(var(--breaking-news));
+    }
+    50% { 
+      background-color: hsl(var(--breaking-news) / 0.8);
+    }
+  }
+  
+  .breaking-animation {
+    animation: breaking-pulse 2s ease-in-out infinite;
+  }
+  
+  /* Brand gradient text */
+  .gradient-text {
+    background: var(--brand-gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  /* Hover animations */
+  .hover-lift {
+    transition: var(--transition-smooth);
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-brand);
   }
 }

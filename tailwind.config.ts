@@ -19,9 +19,17 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        
+        /* Brand Colors */
+        brand: {
+          pink: "hsl(var(--brand-pink))",
+          blue: "hsl(var(--brand-blue))",
+        },
+        
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          hover: "hsl(var(--primary-hover))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -30,6 +38,14 @@ export default {
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -46,6 +62,13 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+          hover: "hsl(var(--card-hover))",
+        },
+        
+        /* News-specific colors */
+        breaking: {
+          DEFAULT: "hsl(var(--breaking-news))",
+          foreground: "hsl(var(--breaking-news-foreground))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -58,6 +81,22 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
+      
+      backgroundImage: {
+        'brand-gradient': 'var(--brand-gradient)',
+        'brand-gradient-soft': 'var(--brand-gradient-soft)',
+      },
+      
+      boxShadow: {
+        'soft': 'var(--shadow-soft)',
+        'brand': 'var(--shadow-brand)',
+      },
+      
+      transitionTimingFunction: {
+        'smooth': 'var(--transition-smooth)',
+        'fast': 'var(--transition-fast)',
+      },
+      
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
