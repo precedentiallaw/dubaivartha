@@ -25,32 +25,8 @@
       "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-128x128.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-144x144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-152x152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
       "src": "/icons/icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-384x384.png",
-      "sizes": "384x384",
       "type": "image/png",
       "purpose": "maskable any"
     },
@@ -66,37 +42,19 @@
       "name": "Breaking News",
       "short_name": "Breaking",
       "description": "View latest breaking news",
-      "url": "/?category=breaking",
-      "icons": [
-        {
-          "src": "/icons/breaking-96x96.png",
-          "sizes": "96x96"
-        }
-      ]
+      "url": "/?category=breaking"
     },
     {
       "name": "Dubai News",
       "short_name": "Dubai",
       "description": "Dubai local news",
-      "url": "/?category=dubai",
-      "icons": [
-        {
-          "src": "/icons/dubai-96x96.png",
-          "sizes": "96x96"
-        }
-      ]
+      "url": "/?category=dubai"
     },
     {
       "name": "Kerala News",
       "short_name": "Kerala",
       "description": "Kerala regional news",
-      "url": "/?category=kerala",
-      "icons": [
-        {
-          "src": "/icons/kerala-96x96.png",
-          "sizes": "96x96"
-        }
-      ]
+      "url": "/?category=kerala"
     }
   ],
   "share_target": {
