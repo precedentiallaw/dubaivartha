@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Menu, Search, Bell, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import dubaiVarthaLogo from "@/assets/dubai-vartha-logo.png";
+import dubaiVarthaLogo from "@/assets/dubai-vartha-logo-official.png";
 
 interface HeaderProps {
   onMenuClick: () => void;

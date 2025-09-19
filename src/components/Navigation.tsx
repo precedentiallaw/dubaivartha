@@ -13,6 +13,7 @@ const categories = [
   { id: "videos", label: "Videos", labelMalayalam: "വീഡിയോസ്", icon: Play },
   { id: "social", label: "Social", labelMalayalam: "സോഷ്യൽ", icon: Instagram },
   { id: "trending", label: "Trending", labelMalayalam: "ട്രെൻഡിംഗ്", icon: TrendingUp },
+  { id: "about", label: "About", labelMalayalam: "കുറിച്ച്", icon: Users },
 ];
 
 interface NavigationProps {
