@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Navigation from "@/components/Navigation";
 import BreakingNews from "@/components/BreakingNews";
-import ArticleCard, { Article } from "@/components/ArticleCard";
+import ArticleCard from "@/components/ArticleCard";
 import ArticleDetail from "@/components/ArticleDetail";
 import AdBanner from "@/components/AdBanner";
 import SubscriberOffers from "@/components/SubscriberOffers";
-import { mockArticles, getArticlesByCategory } from "@/data/mockArticles";
+import { useArticles, Article } from "@/hooks/useArticles";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { RefreshCw } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -15,7 +17,7 @@ const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("home");
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
-  const [articles, setArticles] = useState<Article[]>(mockArticles);
+  const { articles, loading, error, refreshArticles, fetchRSSFeed } = useArticles(activeCategory);
 
   useEffect(() => {
     // Apply theme
@@ -26,10 +28,10 @@ const Index = () => {
     }
   }, [isDark]);
 
+  // Fetch RSS feed on initial load
   useEffect(() => {
-    // Update articles when category changes
-    setArticles(getArticlesByCategory(activeCategory));
-  }, [activeCategory]);
+    fetchRSSFeed();
+  }, []);
 
   const handleThemeToggle = () => {
     setIsDark(!isDark);
@@ -73,7 +75,7 @@ const Index = () => {
     );
   }
 
-  const featuredArticle = articles.find(article => article.isBreaking) || articles[0];
+  const featuredArticle = articles.find(article => article.is_breaking) || articles[0];
   const regularArticles = articles.filter(article => article.id !== featuredArticle?.id);
 
   return (
@@ -95,16 +97,34 @@ const Index = () => {
       
       <main className="md:ml-0 transition-all duration-300">
         <div className="container mx-auto px-4 py-6">
-            {featuredArticle && (
-              <section className="mb-8">
-                <h2 className="text-2xl font-bold mb-4 gradient-text">Featured News</h2>
-                <ArticleCard
-                  article={featuredArticle}
-                  variant="featured"
-                  onClick={handleArticleClick}
-                />
-              </section>
-            )}
+          {/* RSS Feed Controls */}
+          <section className="mb-6 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <h1 className="text-xl font-bold">Dubai Vartha News</h1>
+              {loading && <span className="text-sm text-muted-foreground">Loading...</span>}
+              {error && <span className="text-sm text-red-500">Error: {error}</span>}
+            </div>
+            <Button 
+              onClick={fetchRSSFeed} 
+              variant="outline" 
+              size="sm"
+              disabled={loading}
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+              Refresh News
+            </Button>
+          </section>
+
+          {featuredArticle && (
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4 gradient-text">Featured News</h2>
+              <ArticleCard
+                article={featuredArticle}
+                variant="featured"
+                onClick={handleArticleClick}
+              />
+            </section>
+          )}
 
             {/* Ad Banner */}
             <AdBanner type="featured" className="mb-8" />
