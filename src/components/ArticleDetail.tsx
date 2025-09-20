@@ -1,15 +1,22 @@
-import { ArrowLeft, Clock, Eye, Share2, Heart, MessageCircle, Bookmark } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { ArrowLeft, Share2, Heart, MessageCircle, Eye, Clock } from "lucide-react";
 import { Article } from "@/hooks/useArticles";
+import BookmarkButton from "@/components/features/BookmarkButton";
+import ReadingProgress from "@/components/features/ReadingProgress";
+import RelatedArticles from "@/components/features/RelatedArticles";
+import { useArticles } from "@/hooks/useArticles";
 
 interface ArticleDetailProps {
   article: Article;
   onBack: () => void;
+  onRelatedArticleClick?: (article: Article) => void;
 }
 
-const ArticleDetail = ({ article, onBack }: ArticleDetailProps) => {
+const ArticleDetail = ({ article, onBack, onRelatedArticleClick }: ArticleDetailProps) => {
+  const { articles } = useArticles();
   const formatTimeAgo = (dateString: string) => {
     const now = new Date();
     const published = new Date(dateString);
@@ -38,23 +45,23 @@ const ArticleDetail = ({ article, onBack }: ArticleDetailProps) => {
   const displayContent = article.content || displayExcerpt;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <Button variant="ghost" onClick={onBack} className="flex items-center space-x-2">
-          <ArrowLeft className="h-4 w-4" />
-          <span>Back</span>
-        </Button>
-        
-        <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="sm">
-            <Bookmark className="h-4 w-4" />
+    <>
+      <ReadingProgress content={article.content || ""} />
+      <div className="max-w-4xl mx-auto px-4 py-6">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <Button variant="ghost" onClick={onBack} className="flex items-center space-x-2">
+            <ArrowLeft className="h-4 w-4" />
+            <span>Back</span>
           </Button>
-          <Button variant="ghost" size="sm">
-            <Share2 className="h-4 w-4" />
-          </Button>
+          
+          <div className="flex items-center space-x-2">
+            <BookmarkButton article={article} />
+            <Button variant="ghost" size="sm">
+              <Share2 className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
-      </div>
 
       {/* Article Header */}
       <div className="mb-6">
@@ -135,16 +142,27 @@ const ArticleDetail = ({ article, onBack }: ArticleDetailProps) => {
       </div>
 
       {/* Related Articles */}
-      <div>
-        <h3 className="text-xl font-semibold mb-4">Related Articles</h3>
-        <div className="grid gap-4">
-          {/* Related articles would be loaded here */}
-          <div className="text-muted-foreground text-center py-8">
-            Loading related articles...
+      {onRelatedArticleClick && (
+        <RelatedArticles
+          currentArticle={article}
+          allArticles={articles}
+          onArticleClick={onRelatedArticleClick}
+          className="mb-8"
+        />
+      )}
+
+      {/* Comments Section */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <MessageCircle className="h-5 w-5" />
+            <h3 className="font-semibold">Comments (3)</h3>
           </div>
-        </div>
-      </div>
+          <p className="text-muted-foreground text-sm">Comments feature coming soon...</p>
+        </CardContent>
+      </Card>
     </div>
+    </>
   );
 };
 

@@ -2,6 +2,7 @@ import { Clock, Eye, Share2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import BookmarkButton from "@/components/features/BookmarkButton";
 
 export interface Article {
   id: string;
@@ -146,9 +147,12 @@ const ArticleCard = ({ article, variant = "default", onClick }: ArticleCardProps
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-2">
           <Badge variant="outline">{displayCategory}</Badge>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-            <Share2 className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-1">
+            <BookmarkButton article={article} />
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+              <Share2 className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
         
         <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">

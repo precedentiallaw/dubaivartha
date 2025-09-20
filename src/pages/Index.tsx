@@ -10,6 +10,9 @@ import { useArticles, Article } from "@/hooks/useArticles";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
+import { NewsGridSkeleton } from "@/components/ui/loading-skeleton";
+import InstagramReels from "@/components/social/InstagramReels";
+import Bookmarks from "@/pages/Bookmarks";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -17,6 +20,7 @@ const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("home");
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [showBookmarks, setShowBookmarks] = useState(false);
   const { articles, loading, error, refreshArticles, fetchRSSFeed } = useArticles(activeCategory);
 
   useEffect(() => {
@@ -46,8 +50,13 @@ const Index = () => {
       navigate("/about");
       return;
     }
+    if (category === "bookmarks") {
+      setShowBookmarks(true);
+      return;
+    }
     setActiveCategory(category);
     setSelectedArticle(null);
+    setShowBookmarks(false);
   };
 
   const handleArticleClick = (article: Article) => {
@@ -56,7 +65,25 @@ const Index = () => {
 
   const handleBackToList = () => {
     setSelectedArticle(null);
+    setShowBookmarks(false);
   };
+
+  // Show bookmarks view
+  if (showBookmarks) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header 
+          onMenuClick={handleMenuToggle}
+          isDark={isDark}
+          onThemeToggle={handleThemeToggle}
+        />
+        <Bookmarks 
+          onBack={handleBackToList}
+          onArticleClick={handleArticleClick}
+        />
+      </div>
+    );
+  }
 
   // Show article detail view
   if (selectedArticle) {
@@ -70,6 +97,7 @@ const Index = () => {
         <ArticleDetail 
           article={selectedArticle}
           onBack={handleBackToList}
+          onRelatedArticleClick={handleArticleClick}
         />
       </div>
     );
@@ -115,75 +143,95 @@ const Index = () => {
             </Button>
           </section>
 
-          {featuredArticle && (
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4 gradient-text">Featured News</h2>
-              <ArticleCard
-                article={featuredArticle}
-                variant="featured"
-                onClick={handleArticleClick}
-              />
-            </section>
-          )}
+          {/* Loading State */}
+          {loading && articles.length === 0 ? (
+            <NewsGridSkeleton />
+          ) : (
+            <>
+              {/* Social Media Section */}
+              {activeCategory === "home" && (
+                <section className="mb-8">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-bold">Instagram Updates</h2>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <InstagramReels className="max-w-48" />
+                    <InstagramReels className="max-w-48" />
+                  </div>
+                </section>
+              )}
 
-            {/* Ad Banner */}
-            <AdBanner type="featured" className="mb-8" />
+              {featuredArticle && (
+                <section className="mb-8">
+                  <h2 className="text-2xl font-bold mb-4 gradient-text">Featured News</h2>
+                  <ArticleCard
+                    article={featuredArticle}
+                    variant="featured"
+                    onClick={handleArticleClick}
+                  />
+                </section>
+              )}
 
-            {/* Regular Articles Grid */}
-            <section>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold">
-                  {activeCategory === "home" ? "Latest News" : `${activeCategory.toUpperCase()} News`}
-                </h2>
-                <span className="text-sm text-muted-foreground">
-                  {articles.length} articles
-                </span>
-              </div>
-              
-              {articles.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {regularArticles.slice(0, 6).map((article, index) => (
-                    <div key={article.id}>
-                      <ArticleCard
-                        article={article}
-                        onClick={handleArticleClick}
-                      />
-                      {/* Insert ad banner after every 3rd article */}
-                      {(index + 1) % 3 === 0 && index < regularArticles.length - 1 && (
-                        <div className="col-span-full mt-6 mb-6">
-                          <AdBanner type="banner" className="max-w-2xl mx-auto" />
-                        </div>
-                      )}
-                    </div>
-                  ))}
+              {/* Ad Banner */}
+              <AdBanner type="featured" className="mb-8" />
+
+              {/* Regular Articles Grid */}
+              <section>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold">
+                    {activeCategory === "home" ? "Latest News" : `${activeCategory.toUpperCase()} News`}
+                  </h2>
+                  <span className="text-sm text-muted-foreground">
+                    {articles.length} articles
+                  </span>
                 </div>
-              ) : (
-                <div className="text-center py-12">
-                  <p className="text-muted-foreground text-lg">
-                    No articles found in this category.
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Check back later for updates.
-                  </p>
+                
+                {articles.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {regularArticles.slice(0, 6).map((article, index) => (
+                      <div key={article.id}>
+                        <ArticleCard
+                          article={article}
+                          onClick={handleArticleClick}
+                        />
+                        {/* Insert ad banner after every 3rd article */}
+                        {(index + 1) % 3 === 0 && index < regularArticles.length - 1 && (
+                          <div className="col-span-full mt-6 mb-6">
+                            <AdBanner type="banner" className="max-w-2xl mx-auto" />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <p className="text-muted-foreground text-lg">
+                      No articles found in this category.
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Check back later for updates.
+                    </p>
+                  </div>
+                )}
+              </section>
+
+              {/* Subscriber Offers Section */}
+              {activeCategory === "home" && (
+                <section className="mt-16">
+                  <SubscriberOffers />
+                </section>
+              )}
+
+              {/* Load More Button */}
+              {articles.length > 6 && (
+                <div className="text-center mt-12">
+                  <button className="px-8 py-3 bg-brand-gradient text-white rounded-lg font-medium hover:opacity-90 transition-opacity">
+                    Load More Articles
+                  </button>
                 </div>
               )}
-            </section>
-
-            {/* Subscriber Offers Section */}
-            {activeCategory === "home" && (
-              <section className="mt-16">
-                <SubscriberOffers />
-              </section>
-            )}
-
-            {/* Load More Button */}
-            {articles.length > 6 && (
-              <div className="text-center mt-12">
-                <button className="px-8 py-3 bg-brand-gradient text-white rounded-lg font-medium hover:opacity-90 transition-opacity">
-                  Load More Articles
-                </button>
-              </div>
-            )}
+            </>
+          )}
         </div>
       </main>
     </div>
