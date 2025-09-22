@@ -27,6 +27,7 @@ export type Database = {
           is_breaking: boolean | null
           published_at: string
           read_time: number | null
+          search_vector: unknown | null
           slug: string
           source_url: string | null
           title: string
@@ -45,6 +46,7 @@ export type Database = {
           is_breaking?: boolean | null
           published_at: string
           read_time?: number | null
+          search_vector?: unknown | null
           slug: string
           source_url?: string | null
           title: string
@@ -63,6 +65,7 @@ export type Database = {
           is_breaking?: boolean | null
           published_at?: string
           read_time?: number | null
+          search_vector?: unknown | null
           slug?: string
           source_url?: string | null
           title?: string
@@ -76,7 +79,28 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      search_articles: {
+        Args: { max_results?: number; search_query: string }
+        Returns: {
+          author: string
+          cached_at: string
+          category: string
+          content: string
+          created_at: string
+          excerpt: string
+          id: string
+          image_url: string
+          is_breaking: boolean
+          published_at: string
+          read_time: number
+          search_rank: number
+          slug: string
+          source_url: string
+          title: string
+          updated_at: string
+          views: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
