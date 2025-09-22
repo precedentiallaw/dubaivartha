@@ -13,6 +13,7 @@ import { RefreshCw } from "lucide-react";
 import { NewsGridSkeleton } from "@/components/ui/loading-skeleton";
 import InstagramReels from "@/components/social/InstagramReels";
 import Bookmarks from "@/pages/Bookmarks";
+import Search from "@/pages/Search";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ const Index = () => {
   const [activeCategory, setActiveCategory] = useState("home");
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [showBookmarks, setShowBookmarks] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
   const { articles, loading, error, refreshArticles, fetchRSSFeed } = useArticles(activeCategory);
 
   useEffect(() => {
@@ -52,11 +54,18 @@ const Index = () => {
     }
     if (category === "bookmarks") {
       setShowBookmarks(true);
+      setShowSearch(false);
+      return;
+    }
+    if (category === "search") {
+      setShowSearch(true);
+      setShowBookmarks(false);
       return;
     }
     setActiveCategory(category);
     setSelectedArticle(null);
     setShowBookmarks(false);
+    setShowSearch(false);
   };
 
   const handleArticleClick = (article: Article) => {
@@ -66,7 +75,25 @@ const Index = () => {
   const handleBackToList = () => {
     setSelectedArticle(null);
     setShowBookmarks(false);
+    setShowSearch(false);
   };
+
+  // Show search view
+  if (showSearch) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header 
+          onMenuClick={handleMenuToggle}
+          isDark={isDark}
+          onThemeToggle={handleThemeToggle}
+        />
+        <Search 
+          onBack={handleBackToList}
+          onArticleClick={handleArticleClick}
+        />
+      </div>
+    );
+  }
 
   // Show bookmarks view
   if (showBookmarks) {
@@ -148,18 +175,61 @@ const Index = () => {
             <NewsGridSkeleton />
           ) : (
             <>
-              {/* Social Media Section */}
-              {activeCategory === "home" && (
+              {/* Social Media Content for Social Category */}
+              {activeCategory === "social" && (
                 <section className="mb-8">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-bold">Instagram Updates</h2>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <InstagramReels className="max-w-48" />
-                    <InstagramReels className="max-w-48" />
+                  <div className="space-y-6">
+                    <h2 className="text-xl font-bold">Social Media Updates</h2>
+                    
+                    {/* Instagram Section */}
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <span className="text-brand-gradient bg-clip-text bg-gradient-to-r from-brand-pink to-brand-blue">
+                          Instagram Reels
+                        </span>
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <InstagramReels />
+                        <InstagramReels />
+                        <InstagramReels />
+                      </div>
+                    </div>
+
+                    {/* Other Social Platforms */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="bg-card border rounded-lg p-6">
+                        <h3 className="font-semibold mb-3">Facebook Posts</h3>
+                        <div className="bg-muted/30 rounded-lg p-8 text-center text-muted-foreground">
+                          <p>Facebook integration coming soon...</p>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-card border rounded-lg p-6">
+                        <h3 className="font-semibold mb-3">YouTube Videos</h3>
+                        <div className="bg-muted/30 rounded-lg p-8 text-center text-muted-foreground">
+                          <p>YouTube integration coming soon...</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </section>
               )}
+
+              {/* Regular content for other categories */}
+              {activeCategory !== "social" && (
+                <>
+                  {/* Social Media Section for Home */}
+                  {activeCategory === "home" && (
+                    <section className="mb-8">
+                      <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xl font-bold">Instagram Updates</h2>
+                      </div>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <InstagramReels className="max-w-48" />
+                        <InstagramReels className="max-w-48" />
+                      </div>
+                    </section>
+                  )}
 
               {featuredArticle && (
                 <section className="mb-8">
@@ -214,6 +284,8 @@ const Index = () => {
                   </div>
                 )}
               </section>
+                </>
+              )}
 
               {/* Subscriber Offers Section */}
               {activeCategory === "home" && (

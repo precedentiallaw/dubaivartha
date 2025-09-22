@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Home, MapPin, Globe, Play, Instagram, TrendingUp, Users, Bookmark } from "lucide-react";
+import { Search, Home, MapPin, Globe, Play, Instagram, TrendingUp, Users, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const categories = [
+  { id: "search", label: "Search", labelMalayalam: "തിരയുക", icon: Search },
   { id: "home", label: "Home", labelMalayalam: "ഹോം", icon: Home },
   { id: "dubai", label: "Dubai", labelMalayalam: "ദുബായ്", icon: MapPin },
   { id: "uae", label: "UAE", labelMalayalam: "യുഎഇ", icon: MapPin },
