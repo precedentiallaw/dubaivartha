@@ -1,31 +1,53 @@
 import { useState } from "react";
-import { Search, Home, MapPin, Globe, Play, Instagram, TrendingUp, Users, Bookmark } from "lucide-react";
+import { Search, Home, MapPin, Globe, Play, Instagram, TrendingUp, Users, Bookmark, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const categories = [
-  { id: "search", label: "Search", labelMalayalam: "തിരയുക", icon: Search },
-  { id: "home", label: "Home", labelMalayalam: "ഹോം", icon: Home },
-  { id: "dubai", label: "Dubai", labelMalayalam: "ദുബായ്", icon: MapPin },
-  { id: "uae", label: "UAE", labelMalayalam: "യുഎഇ", icon: MapPin },
-  { id: "kerala", label: "Kerala", labelMalayalam: "കേരളം", icon: MapPin },
-  { id: "gcc", label: "GCC", labelMalayalam: "ജിസിസി", icon: Globe },
-  { id: "world", label: "World", labelMalayalam: "ലോകം", icon: Globe },
-  { id: "videos", label: "Videos", labelMalayalam: "വീഡിയോസ്", icon: Play },
-  { id: "social", label: "Social", labelMalayalam: "സോഷ്യൽ", icon: Instagram },
-  { id: "trending", label: "Trending", labelMalayalam: "ട്രെൻഡിംഗ്", icon: TrendingUp },
-  { id: "bookmarks", label: "Bookmarks", labelMalayalam: "ബുക്ക്മാർക്കുകൾ", icon: Bookmark },
-  { id: "about", label: "About", labelMalayalam: "കുറിച്ച്", icon: Users },
+  { id: "search", label: "Search", labelMalayalam: "തിരയുക", icon: Search, route: "/search" },
+  { id: "home", label: "Home", labelMalayalam: "ഹോം", icon: Home, route: "/" },
+  { id: "breaking", label: "Breaking", labelMalayalam: "ബ്രേക്കിംഗ്", icon: Zap, route: "/breaking" },
+  { id: "dubai", label: "Dubai", labelMalayalam: "ദുബായ്", icon: MapPin, route: "/category/dubai" },
+  { id: "uae", label: "UAE", labelMalayalam: "യുഎഇ", icon: MapPin, route: "/category/uae" },
+  { id: "kerala", label: "Kerala", labelMalayalam: "കേരളം", icon: MapPin, route: "/category/kerala" },
+  { id: "gcc", label: "GCC", labelMalayalam: "ജിസിസി", icon: Globe, route: "/category/gcc" },
+  { id: "world", label: "World", labelMalayalam: "ലോകം", icon: Globe, route: "/category/world" },
+  { id: "videos", label: "Videos", labelMalayalam: "വീഡിയോസ്", icon: Play, route: "/category/videos" },
+  { id: "social", label: "Social", labelMalayalam: "സോഷ്യൽ", icon: Instagram, route: "/category/social" },
+  { id: "trending", label: "Trending", labelMalayalam: "ട്രെൻഡിംഗ്", icon: TrendingUp, route: "/category/trending" },
+  { id: "bookmarks", label: "Bookmarks", labelMalayalam: "ബുക്ക്മാർക്കുകൾ", icon: Bookmark, route: "/bookmarks" },
+  { id: "about", label: "About", labelMalayalam: "കുറിച്ച്", icon: Users, route: "/about" },
 ];
 
 interface NavigationProps {
-  activeCategory: string;
-  onCategoryChange: (category: string) => void;
   isOpen: boolean;
   onClose: () => void;
 }
 
-const Navigation = ({ activeCategory, onCategoryChange, isOpen, onClose }: NavigationProps) => {
+const Navigation = ({ isOpen, onClose }: NavigationProps) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const getActiveCategory = () => {
+    const path = location.pathname;
+    if (path === '/') return 'home';
+    if (path === '/search') return 'search';
+    if (path === '/bookmarks') return 'bookmarks';
+    if (path === '/breaking') return 'breaking';
+    if (path === '/about') return 'about';
+    if (path.startsWith('/category/')) {
+      return path.split('/')[2];
+    }
+    return 'home';
+  };
+
+  const activeCategory = getActiveCategory();
+
+  const handleCategoryClick = (category: any) => {
+    navigate(category.route);
+    onClose();
+  };
   return (
     <>
       {/* Mobile overlay */}
@@ -56,10 +78,7 @@ const Navigation = ({ activeCategory, onCategoryChange, isOpen, onClose }: Navig
                   "w-full justify-start space-x-3 h-12 px-4",
                   isActive && "bg-brand-gradient text-white hover:opacity-90"
                 )}
-                onClick={() => {
-                  onCategoryChange(category.id);
-                  onClose();
-                }}
+                onClick={() => handleCategoryClick(category)}
               >
                 <Icon className="h-5 w-5" />
                 <div className="flex flex-col items-start">
@@ -102,7 +121,7 @@ const Navigation = ({ activeCategory, onCategoryChange, isOpen, onClose }: Navig
                     "flex-shrink-0 space-x-2",
                     isActive && "bg-brand-gradient text-white hover:opacity-90"
                   )}
-                  onClick={() => onCategoryChange(category.id)}
+                  onClick={() => handleCategoryClick(category)}
                 >
                   <Icon className="h-4 w-4" />
                   <span>{category.label}</span>

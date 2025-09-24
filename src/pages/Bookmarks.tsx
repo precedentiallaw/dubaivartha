@@ -1,18 +1,28 @@
-import { useState, useEffect } from 'react';
+import { ArrowLeft, Bookmark, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Trash2, BookmarkX } from 'lucide-react';
-import ArticleCard from '@/components/ArticleCard';
+import { useState, useEffect } from 'react';
 import { Article } from '@/hooks/useArticles';
+import ArticleCard from '@/components/ArticleCard';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
+import { BookmarkX } from 'lucide-react';
 
-interface BookmarksProps {
-  onBack: () => void;
-  onArticleClick: (article: Article) => void;
-}
-
-const Bookmarks = ({ onBack, onArticleClick }: BookmarksProps) => {
+const Bookmarks = () => {
+  const navigate = useNavigate();
   const [bookmarks, setBookmarks] = useState<Article[]>([]);
   const { toast } = useToast();
+
+  const handleBack = () => {
+    navigate('/');
+  };
+
+  const handleArticleClick = (article: Article) => {
+    navigate(`/article/${article.slug}`);
+  };
+
+  const handleBrowseArticles = () => {
+    navigate('/');
+  };
 
   useEffect(() => {
     loadBookmarks();
@@ -64,7 +74,7 @@ const Bookmarks = ({ onBack, onArticleClick }: BookmarksProps) => {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={onBack}>
+            <Button variant="ghost" size="sm" onClick={handleBack}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back
             </Button>
@@ -99,7 +109,7 @@ const Bookmarks = ({ onBack, onArticleClick }: BookmarksProps) => {
             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
               Start building your reading list by bookmarking articles you want to read later.
             </p>
-            <Button onClick={onBack}>
+            <Button onClick={handleBrowseArticles}>
               Browse Articles
             </Button>
           </div>
@@ -109,7 +119,7 @@ const Bookmarks = ({ onBack, onArticleClick }: BookmarksProps) => {
               <div key={article.id} className="relative group">
                 <ArticleCard
                   article={article}
-                  onClick={onArticleClick}
+                  onClick={() => handleArticleClick(article)}
                 />
                 {/* Remove bookmark button */}
                 <Button

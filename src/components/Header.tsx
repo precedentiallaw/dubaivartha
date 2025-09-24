@@ -3,6 +3,7 @@ import { Menu, Search, Bell, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import dubaiVarthaLogo from "@/assets/dubai-vartha-logo-official.png";
+import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -11,7 +12,16 @@ interface HeaderProps {
 }
 
 const Header = ({ onMenuClick, isDark, onThemeToggle }: HeaderProps) => {
+  const navigate = useNavigate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const handleSearchClick = () => {
+    navigate('/search');
+  };
+
+  const handleLogoClick = () => {
+    navigate('/');
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -27,7 +37,7 @@ const Header = ({ onMenuClick, isDark, onThemeToggle }: HeaderProps) => {
             <Menu className="h-5 w-5" />
           </Button>
           
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3 cursor-pointer" onClick={handleLogoClick}>
             <img 
               src={dubaiVarthaLogo} 
               alt="Dubai Vartha" 
@@ -42,12 +52,13 @@ const Header = ({ onMenuClick, isDark, onThemeToggle }: HeaderProps) => {
 
         {/* Center - Search (Desktop) */}
         <div className="hidden md:flex flex-1 max-w-md mx-8">
-          <div className="relative w-full">
+          <div className="relative w-full cursor-pointer" onClick={handleSearchClick}>
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search news..."
-              className="pl-10 bg-muted/50 border-0 focus-visible:ring-2 focus-visible:ring-primary"
+              className="pl-10 bg-muted/50 border-0 focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
+              readOnly
             />
           </div>
         </div>
@@ -58,7 +69,7 @@ const Header = ({ onMenuClick, isDark, onThemeToggle }: HeaderProps) => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setIsSearchOpen(!isSearchOpen)}
+            onClick={handleSearchClick}
             className="md:hidden"
           >
             <Search className="h-5 w-5" />
@@ -77,20 +88,6 @@ const Header = ({ onMenuClick, isDark, onThemeToggle }: HeaderProps) => {
         </div>
       </div>
 
-      {/* Mobile search */}
-      {isSearchOpen && (
-        <div className="border-t px-4 py-3 md:hidden">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search news..."
-              className="pl-10 bg-muted/50 border-0"
-              autoFocus
-            />
-          </div>
-        </div>
-      )}
     </header>
   );
 };

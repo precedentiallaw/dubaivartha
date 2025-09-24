@@ -4,13 +4,10 @@ import { useSearch } from '@/hooks/useSearch';
 import SearchBar from '@/components/search/SearchBar';
 import SearchResults from '@/components/search/SearchResults';
 import { Article } from '@/hooks/useArticles';
+import { useNavigate } from 'react-router-dom';
 
-interface SearchPageProps {
-  onBack: () => void;
-  onArticleClick: (article: Article) => void;
-}
-
-const Search = ({ onBack, onArticleClick }: SearchPageProps) => {
+const Search = () => {
+  const navigate = useNavigate();
   const {
     searchResults,
     isSearching,
@@ -19,6 +16,14 @@ const Search = ({ onBack, onArticleClick }: SearchPageProps) => {
     performSearch,
     clearSearch
   } = useSearch();
+
+  const handleBack = () => {
+    navigate('/');
+  };
+
+  const handleArticleClick = (article: Article) => {
+    navigate(`/article/${article.slug}`);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -29,7 +34,7 @@ const Search = ({ onBack, onArticleClick }: SearchPageProps) => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={onBack}
+              onClick={handleBack}
               className="flex items-center gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -52,7 +57,7 @@ const Search = ({ onBack, onArticleClick }: SearchPageProps) => {
       <main className="container px-4 py-6">
         <SearchResults
           results={searchResults}
-          onArticleClick={onArticleClick}
+          onArticleClick={handleArticleClick}
           isSearching={isSearching}
           searchQuery={searchQuery}
           error={searchError}

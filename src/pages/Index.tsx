@@ -3,7 +3,6 @@ import Header from "@/components/Header";
 import Navigation from "@/components/Navigation";
 import BreakingNews from "@/components/BreakingNews";
 import ArticleCard from "@/components/ArticleCard";
-import ArticleDetail from "@/components/ArticleDetail";
 import AdBanner from "@/components/AdBanner";
 import SubscriberOffers from "@/components/SubscriberOffers";
 import { useArticles, Article } from "@/hooks/useArticles";
@@ -12,18 +11,12 @@ import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
 import { NewsGridSkeleton } from "@/components/ui/loading-skeleton";
 import InstagramReels from "@/components/social/InstagramReels";
-import Bookmarks from "@/pages/Bookmarks";
-import Search from "@/pages/Search";
 
 const Index = () => {
   const navigate = useNavigate();
   const [isDark, setIsDark] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState("home");
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
-  const [showBookmarks, setShowBookmarks] = useState(false);
-  const [showSearch, setShowSearch] = useState(false);
-  const { articles, loading, error, refreshArticles, fetchRSSFeed } = useArticles(activeCategory);
+  const { articles, loading, error, refreshArticles, fetchRSSFeed } = useArticles("home");
 
   useEffect(() => {
     // Apply theme
@@ -47,261 +40,130 @@ const Index = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleCategoryChange = (category: string) => {
-    if (category === "about") {
-      navigate("/about");
-      return;
-    }
-    if (category === "bookmarks") {
-      setShowBookmarks(true);
-      setShowSearch(false);
-      return;
-    }
-    if (category === "search") {
-      setShowSearch(true);
-      setShowBookmarks(false);
-      return;
-    }
-    setActiveCategory(category);
-    setSelectedArticle(null);
-    setShowBookmarks(false);
-    setShowSearch(false);
-  };
-
   const handleArticleClick = (article: Article) => {
-    setSelectedArticle(article);
+    navigate(`/article/${article.slug}`);
   };
 
-  const handleBackToList = () => {
-    setSelectedArticle(null);
-    setShowBookmarks(false);
-    setShowSearch(false);
+  // Filter featured articles
+  const filterFeaturedArticles = () => {
+    return articles.filter(article => article.is_breaking).slice(0, 1);
   };
 
-  // Show search view
-  if (showSearch) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Header 
-          onMenuClick={handleMenuToggle}
-          isDark={isDark}
-          onThemeToggle={handleThemeToggle}
-        />
-        <Search 
-          onBack={handleBackToList}
-          onArticleClick={handleArticleClick}
-        />
-      </div>
-    );
-  }
-
-  // Show bookmarks view
-  if (showBookmarks) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Header 
-          onMenuClick={handleMenuToggle}
-          isDark={isDark}
-          onThemeToggle={handleThemeToggle}
-        />
-        <Bookmarks 
-          onBack={handleBackToList}
-          onArticleClick={handleArticleClick}
-        />
-      </div>
-    );
-  }
-
-  // Show article detail view
-  if (selectedArticle) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Header 
-          onMenuClick={handleMenuToggle}
-          isDark={isDark}
-          onThemeToggle={handleThemeToggle}
-        />
-        <ArticleDetail 
-          article={selectedArticle}
-          onBack={handleBackToList}
-          onRelatedArticleClick={handleArticleClick}
-        />
-      </div>
-    );
-  }
-
-  const featuredArticle = articles.find(article => article.is_breaking) || articles[0];
-  const regularArticles = articles.filter(article => article.id !== featuredArticle?.id);
+  const filterRegularArticles = () => {
+    return articles.filter(article => !article.is_breaking);
+  };
 
   return (
     <div className="min-h-screen bg-background">
-      <Header 
+      <Header
         onMenuClick={handleMenuToggle}
         isDark={isDark}
         onThemeToggle={handleThemeToggle}
       />
-      
+
       <Navigation
-        activeCategory={activeCategory}
-        onCategoryChange={handleCategoryChange}
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
       />
-      
-      <BreakingNews />
-      
-      <main className="md:ml-0 transition-all duration-300">
+
+      <main className="md:ml-0 transition-all duration-300 ease-in-out">
         <div className="container mx-auto px-4 py-6">
-          {/* RSS Feed Controls */}
-          <section className="mb-6 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <h1 className="text-xl font-bold">Dubai Vartha News</h1>
-              {loading && <span className="text-sm text-muted-foreground">Loading...</span>}
-              {error && <span className="text-sm text-red-500">Error: {error}</span>}
+          {/* Breaking News Ticker */}
+          <BreakingNews />
+
+          {/* Instagram Reels */}
+          <div className="mb-8">
+            <InstagramReels />
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+              <p className="text-destructive text-sm">{error}</p>
+              <Button size="sm" onClick={refreshArticles} className="mt-2">
+                Try Again
+              </Button>
             </div>
-            <Button 
-              onClick={fetchRSSFeed} 
-              variant="outline" 
-              size="sm"
-              disabled={loading}
-            >
-              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-              Refresh News
-            </Button>
-          </section>
+          )}
 
           {/* Loading State */}
-          {loading && articles.length === 0 ? (
+          {loading ? (
             <NewsGridSkeleton />
           ) : (
             <>
-              {/* Social Media Content for Social Category */}
-              {activeCategory === "social" && (
+              {/* Featured Articles */}
+              {filterFeaturedArticles().length > 0 && (
                 <section className="mb-8">
-                  <div className="space-y-6">
-                    <h2 className="text-xl font-bold">Social Media Updates</h2>
-                    
-                    {/* Instagram Section */}
-                    <div>
-                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                        <span className="text-brand-gradient bg-clip-text bg-gradient-to-r from-brand-pink to-brand-blue">
-                          Instagram Reels
-                        </span>
-                      </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <InstagramReels />
-                        <InstagramReels />
-                        <InstagramReels />
-                      </div>
-                    </div>
-
-                    {/* Other Social Platforms */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="bg-card border rounded-lg p-6">
-                        <h3 className="font-semibold mb-3">Facebook Posts</h3>
-                        <div className="bg-muted/30 rounded-lg p-8 text-center text-muted-foreground">
-                          <p>Facebook integration coming soon...</p>
-                        </div>
-                      </div>
-                      
-                      <div className="bg-card border rounded-lg p-6">
-                        <h3 className="font-semibold mb-3">YouTube Videos</h3>
-                        <div className="bg-muted/30 rounded-lg p-8 text-center text-muted-foreground">
-                          <p>YouTube integration coming soon...</p>
-                        </div>
-                      </div>
-                    </div>
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold">Featured News</h2>
+                    <div className="h-px flex-1 bg-border ml-4"></div>
                   </div>
-                </section>
-              )}
-
-              {/* Regular content for other categories */}
-              {activeCategory !== "social" && (
-                <>
-                  {/* Social Media Section for Home */}
-                  {activeCategory === "home" && (
-                    <section className="mb-8">
-                      <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-xl font-bold">Instagram Updates</h2>
-                      </div>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <InstagramReels className="max-w-48" />
-                        <InstagramReels className="max-w-48" />
-                      </div>
-                    </section>
-                  )}
-
-              {featuredArticle && (
-                <section className="mb-8">
-                  <h2 className="text-2xl font-bold mb-4 gradient-text">Featured News</h2>
-                  <ArticleCard
-                    article={featuredArticle}
-                    variant="featured"
-                    onClick={handleArticleClick}
-                  />
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {filterFeaturedArticles().map((article) => (
+                      <ArticleCard
+                        key={article.id}
+                        article={article}
+                        onClick={() => handleArticleClick(article)}
+                      />
+                    ))}
+                  </div>
                 </section>
               )}
 
               {/* Ad Banner */}
-              <AdBanner type="featured" className="mb-8" />
+              <div className="mb-8">
+                <AdBanner 
+                  type="featured"
+                  title="Special Offers for Dubai Vartha Readers"
+                />
+              </div>
 
-              {/* Regular Articles Grid */}
-              <section>
+              {/* Latest News */}
+              <section className="mb-8">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold">
-                    {activeCategory === "home" ? "Latest News" : `${activeCategory.toUpperCase()} News`}
-                  </h2>
-                  <span className="text-sm text-muted-foreground">
-                    {articles.length} articles
-                  </span>
+                  <h2 className="text-2xl font-bold">Latest News</h2>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={refreshArticles}
+                    disabled={loading}
+                    className="flex items-center gap-2"
+                  >
+                    <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                    Refresh News
+                  </Button>
                 </div>
-                
-                {articles.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {regularArticles.slice(0, 6).map((article, index) => (
-                      <div key={article.id}>
-                        <ArticleCard
-                          article={article}
-                          onClick={handleArticleClick}
-                        />
-                        {/* Insert ad banner after every 3rd article */}
-                        {(index + 1) % 3 === 0 && index < regularArticles.length - 1 && (
-                          <div className="col-span-full mt-6 mb-6">
-                            <AdBanner type="banner" className="max-w-2xl mx-auto" />
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
+
+                {/* Articles Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filterRegularArticles().map((article) => (
+                    <ArticleCard
+                      key={article.id}
+                      article={article}
+                      onClick={() => handleArticleClick(article)}
+                    />
+                  ))}
+                </div>
+
+                {/* Empty State */}
+                {articles.length === 0 && !loading && (
                   <div className="text-center py-12">
-                    <p className="text-muted-foreground text-lg">
-                      No articles found in this category.
+                    <h3 className="text-lg font-semibold mb-2">No articles found</h3>
+                    <p className="text-muted-foreground mb-4">
+                      No articles are available at the moment. Please check back later.
                     </p>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Check back later for updates.
-                    </p>
+                    <Button onClick={refreshArticles}>
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Refresh Articles
+                    </Button>
                   </div>
                 )}
               </section>
-                </>
-              )}
 
-              {/* Subscriber Offers Section */}
-              {activeCategory === "home" && (
-                <section className="mt-16">
-                  <SubscriberOffers />
-                </section>
-              )}
-
-              {/* Load More Button */}
-              {articles.length > 6 && (
-                <div className="text-center mt-12">
-                  <button className="px-8 py-3 bg-brand-gradient text-white rounded-lg font-medium hover:opacity-90 transition-opacity">
-                    Load More Articles
-                  </button>
-                </div>
-              )}
+              {/* Subscriber Offers */}
+              <div className="mb-8">
+                <SubscriberOffers />
+              </div>
             </>
           )}
         </div>
